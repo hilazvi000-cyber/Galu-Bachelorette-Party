@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Gal's Bachelorette Weekend</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&family=Amatic+SC:wght@700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#fff7f7;
+      --card:#fff;
+      --accent:#b91c1c;
+      --accent-dark:#7f1d1d;
+      --muted:#fecaca;
+      --text:#4a0404;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:"Heebo",sans-serif;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      direction:rtl;
+    }
+
+    /* app frame */
+    .app-wrap{
+      min-height:100vh;
+      padding:24px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .frame{
+      width:100%;
+      max-width:420px;
+      height:90vh;
+      min-height:600px;
+      background:var(--card);
+      border-radius:18px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.12);
+      overflow:hidden;
+      position:relative;
+      display:flex;
+      flex-direction:column;
+    }
+
+    /* header */
+    header.app-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:14px 16px;
+      background: #fff6f4;
+      border-bottom:1px solid rgba(0,0,0,0.03);
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
+    .title{
+      font-family:'Amatic SC', cursive;
+      font-size:28px;
+      color:var(--accent-dark);
+      margin:0;
+      line-height:1;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      width: calc(100% - 56px);
+    }
+    .menu-btn{
+      width:44px;height:44px;border-radius:999px;border:none;
+      background:transparent;display:flex;align-items:center;justify-content:center;
+      cursor:pointer;color:var(--accent-dark);
+    }
+    .menu-btn:focus{outline:2px solid rgba(185,28,28,0.15)}
+
+    /* content area */
+    .content{
+      flex:1;
+      overflow:auto;
+      background:transparent;
+      padding:12px;
+    }
+
+    /* home */
+    .home{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      padding:36px 18px;
+    }
+    .home h1{
+      font-family:'Amatic SC', cursive;
+      font-size:56px;
+      margin:0;
+      color:var(--accent);
+      text-align:center;
+    }
+    .home .heart{font-size:36px;margin-top:8px;color:var(--accent-dark)}
+
+    /* day list */
+    .day-list{
+      padding:12px 6px 28px;
+    }
+    .day-list ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px}
+    .day-list li{display:flex;gap:10px;align-items:flex-start}
+    .bullet{width:22px;height:22px;flex-shrink:0;color:var(--accent);margin-top:4px}
+    .special-box{
+      background:#fff3f3;padding:12px;border-radius:10px;border-right:4px solid var(--muted);margin-top:10px;
+    }
+    .special-box h4{margin:0 0 6px 0;color:var(--accent-dark);font-weight:700}
+    .options{margin:0;padding-right:14px;}
+    .options li{margin:6px 0;color:#6b2b2b}
+
+    /* sidebar */
+    .backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:50}
+    .backdrop.show{opacity:1;pointer-events:auto}
+    .drawer{
+      position:fixed;top:0;bottom:0;right:0;width:300px;
+      background:#fff6f4;box-shadow:-8px 0 30px rgba(0,0,0,0.12);transform:translateX(100%);
+      transition:transform .28s ease;z-index:60;padding:16px;display:flex;flex-direction:column;
+    }
+    .drawer.show{transform:translateX(0)}
+    .drawer h3{font-family:'Amatic SC',cursive;font-size:28px;color:var(--accent-dark);margin:6px 0}
+    .drawer .close-btn{margin-left:auto;border:none;background:transparent;cursor:pointer;color:var(--accent-dark)}
+    .nav{margin-top:8px;display:flex;flex-direction:column;gap:8px}
+    .nav button{display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;border:none;background:transparent;cursor:pointer;text-align:right;color:var(--accent-dark)}
+    .nav button:hover{background:rgba(249, 215, 215, 0.6)}
+    .nav svg{flex-shrink:0}
+
+    /* utility */
+    .muted{color:#8b1b1b}
+    footer.card-foot{text-align:center;padding:18px 10px;color:#9b2226;font-size:14px}
+
+    /* small screens */
+    @media (max-width:480px){
+      .drawer{width:86%}
+      .title{font-size:22px}
+      .home h1{font-size:48px}
+    }
+  </style>
+</head>
+<body>
+  <div class="app-wrap">
+    <div class="frame" role="application" aria-label="לו"ז מסיבת רווקות">
+      <!-- Header -->
+      <header class="app-header" dir="rtl">
+        <h2 class="title" id="pageTitle" aria-live="polite"></h2>
+        <button id="openMenu" class="menu-btn" aria-label="פתיחת תפריט" aria-haspopup="true" aria-expanded="false">
+          <!-- hamburger svg -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </header>
+
+      <!-- Main content -->
+      <div class="content" id="contentArea">
+        <!-- Home -->
+        <div id="view-home" class="home">
+          <h1>Gal's Bachelorette Weekend!</h1>
+          <div class="heart">♥</div>
+        </div>
+
+        <!-- Day view container -->
+        <div id="view-day" class="day-list" style="display:none;">
+          <!-- populated by JS -->
+        </div>
+
+      </div>
+
+      <footer class="card-foot" aria-hidden="false">באהבה ענקית 💋  — ניפגש ברחבה 💃</footer>
+
+      <!-- Backdrop + Drawer -->
+      <div id="backdrop" class="backdrop" tabindex="-1" aria-hidden="true"></div>
+      <aside id="drawer" class="drawer" aria-hidden="true" aria-label="תפריט ניווט">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <h3>תפריט</h3>
+          <button id="closeDrawer" class="close-btn" aria-label="סגירת תפריט">
+            <!-- X svg -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+
+        <nav class="nav" aria-label="ניווט הלו'ז">
+          <!-- buttons injected by JS -->
+        </nav>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * Data (same as React)
+     ***********************/
+    const scheduleData = {
+      home: {
+        title: '',
+      },
+      day1: {
+        title: 'יום ראשון: הגענו!',
+        activities: [
+          "טיסה ודרכי הגעה (מלאות התרגשות!)",
+          "צ'ק-אין למלון והתמקמות בסטייל.",
+          "יוצאות לסיבוב ראשון בשדרה המרכזית של רומא.",
+          "חוזרות לחדר להתארגנות קלה ודרינק פתיחה.",
+          "ערב: מסעדת ערב איטלקית לפתוח את הטיול. 🍝"
+        ]
+      },
+      day2: {
+        title: 'יום שני: שופינג ומשהו מיוחד',
+        activities: [
+          'ארוחת בוקר וקפוצ\'ינו של בוקר.',
+          'מסתובבים בעיר ועושים שופינג (כי מגיע לנו!).',
+          { 
+            type: 'special',
+            title: 'הולכות למקום מיוחד ברומא! (בלי לשבור קופה 💰)',
+            optionsTitle: 'אופציות חינמיות לבחירה:',
+            options: [
+              "מזרקת טרווי (Fontana di Trevi)",
+              "המדרגות הספרדיות (Piazza di Spagna)",
+              "גני התפוזים (Giardino degli Aranci)",
+              "שיטוט בטרסטוורה (Trastevere)",
+              "הפנתיאון (Pantheon)"
+            ]
+          },
+          'חוזרות למלון להתארגן, מוזיקה בפול ווליום.',
+          'ערב בחדר: משחקי חברה, אלכוהול וצחוקים. 🥂',
+          'ערב: יוצאות למסעדה שווה במיוחד.'
+        ]
+      },
+      day3: {
+        title: 'יום שלישי: פאשן ושיק',
+        activities: [
+          'ארוחת בוקר מוקדמת (יחסית...).',
+          'יוצאות לסיור אופנה ברומא (כי מגיע לנו!).',
+          'ממשיכות להסתובב עוד בעיר, אולי שופינג השלמות?',
+          "ג'לאטו חובה! 🍦",
+          'ערב: מסעדת ערב אחרונה ומפנקת במיוחד.'
+        ]
+      },
+      day4: {
+        title: 'יום רביעי: ביי ביי רומא',
+        activities: [
+          'ארוחת בוקר אחרונה (והרבה קפה).',
+          'מתכוננים לצ\'ק-אאוט ועוזבים את המלון.',
+          'עוד סיבוב קטן בעיר לקניות אחרונות ומזכרות.',
+          'יציאה לשדה התעופה. 💔',
+          '(חוזרות לארץ עם מלא חוויות וגעגועים).'
+        ]
+      }
+    };
+
+    /***********************
+     * DOM refs
+     ***********************/
+    const openMenuBtn = document.getElementById('openMenu');
+    const drawer = document.getElementById('drawer');
+    const backdrop = document.getElementById('backdrop');
+    const closeDrawerBtn = document.getElementById('closeDrawer');
+    const navContainer = drawer.querySelector('.nav');
+    const pageTitle = document.getElementById('pageTitle');
+    const viewHome = document.getElementById('view-home');
+    const viewDay = document.getElementById('view-day');
+    const contentArea = document.getElementById('contentArea');
+
+    let currentView = 'home';
+
+    /***********************
+     * Sidebar setup
+     ***********************/
+    const menuItems = [
+      { key: 'home', text: 'דף הבית', icon: '🏠' },
+      { key: 'day1', text: 'יום 1: הגענו!', icon: '✈️' },
+      { key: 'day2', text: 'יום 2: שופינג', icon: '🛍️' },
+      { key: 'day3', text: 'יום 3: פאשן', icon: '☀️' },
+      { key: 'day4', text: 'יום 4: ביי ביי', icon: '🛫' },
+    ];
+
+    function buildMenu(){
+      navContainer.innerHTML = '';
+      menuItems.forEach(item=>{
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.innerHTML = `<span style="margin-left:6px;font-size:18px">${item.icon}</span><span>${item.text}</span>`;
+        btn.addEventListener('click', ()=> {
+          navigateTo(item.key);
+          toggleDrawer(false);
+        });
+        navContainer.appendChild(btn);
+      });
+    }
+
+    /***********************
+     * Drawer controls
+     ***********************/
+    function toggleDrawer(show){
+      if(show){
+        drawer.classList.add('show');
+        backdrop.classList.add('show');
+        drawer.setAttribute('aria-hidden','false');
+        backdrop.setAttribute('aria-hidden','false');
+        openMenuBtn.setAttribute('aria-expanded','true');
+        document.body.style.overflow = 'hidden';
+        // focus management
+        closeDrawerBtn.focus();
+      } else {
+        drawer.classList.remove('show');
+        backdrop.classList.remove('show');
+        drawer.setAttribute('aria-hidden','true');
+        backdrop.setAttribute('aria-hidden','true');
+        openMenuBtn.setAttribute('aria-expanded','false');
+        document.body.style.overflow = '';
+        openMenuBtn.focus();
+      }
+    }
+
+    openMenuBtn.addEventListener('click', ()=> toggleDrawer(true));
+    closeDrawerBtn.addEventListener('click', ()=> toggleDrawer(false));
+    backdrop.addEventListener('click', ()=> toggleDrawer(false));
+
+    // close on Escape
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape') toggleDrawer(false);
+    });
+
+    /***********************
+     * Navigation / views
+     ***********************/
+    function navigateTo(viewKey){
+      currentView = viewKey;
+      updateTitle();
+      renderView();
+    }
+
+    function updateTitle(){
+      if(currentView === 'home'){
+        pageTitle.textContent = ''; // hide title on home
+      } else if(scheduleData[currentView]){
+        pageTitle.textContent = scheduleData[currentView].title;
+      } else {
+        pageTitle.textContent = "הלו'ז שלנו";
+      }
+    }
+
+    function renderView(){
+      if(currentView === 'home'){
+        viewHome.style.display = '';
+        viewDay.style.display = 'none';
+        return;
+      }
+
+      // show day view
+      viewHome.style.display = 'none';
+      viewDay.style.display = '';
+      const day = scheduleData[currentView];
+      if(!day){ viewDay.innerHTML = '<p>לא נמצא תוכן.</p>'; return; }
+
+      let html = '<ul>';
+      day.activities.forEach((act, idx)=>{
+        if(typeof act === 'string'){
+          html += `<li><span class="bullet">◆</span><span>${escapeHtml(act)}</span></li>`;
+        } else if(act.type === 'special'){
+          html += `<li><div style="display:flex;align-items:flex-start;gap:10px"><span class="bullet">◆</span><span style="font-weight:700">${escapeHtml(act.title)}</span></div>`;
+          html += `<div class="special-box"><h4>${escapeHtml(act.optionsTitle)}</h4><ol class="options">`;
+          act.options.forEach(opt=> html += `<li>${escapeHtml(opt)}</li>`);
+          html += `</ol></div></li>`;
+        }
+      });
+      html += '</ul>';
+      viewDay.innerHTML = html;
+    }
+
+    // small helper to avoid basic injection if someone edits data
+    function escapeHtml(unsafe) {
+      return unsafe
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;');
+    }
+
+    /***********************
+     * init
+     ***********************/
+    buildMenu();
+    updateTitle();
+    renderView();
+
+    // optional: allow clicking items in content to switch days (not necessary)
+    // graceful focus when content scrolls: keep header sticky
+
+  </script>
+</body>
+</html>
