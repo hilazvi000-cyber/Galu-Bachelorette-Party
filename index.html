@@ -369,9 +369,9 @@
       let html = '<ul>';
       day.activities.forEach((act, idx)=>{
         if(typeof act === 'string'){
-          html += `<li><span class="bullet">◆</span><span>${escapeHtml(act)}</span></li>`;
+          html += `<li><span class="bullet">♥</span><span>${escapeHtml(act)}</span></li>`;
         } else if(act.type === 'special'){
-          html += `<li><div style="display:flex;align-items:flex-start;gap:10px"><span class="bullet">◆</span><span style="font-weight:700">${escapeHtml(act.title)}</span></div>`;
+          html += `<li><div style="display:flex;align-items:flex-start;gap:10px"><span class="bullet">♥</span><span style="font-weight:700">${escapeHtml(act.title)}</span></div>`;
           html += `<div class="special-box"><h4>${escapeHtml(act.optionsTitle)}</h4><ol class="options">`;
           act.options.forEach(opt=> html += `<li>${escapeHtml(opt)}</li>`);
           html += `</ol></div></li>`;
@@ -402,5 +402,6 @@
   </script>
 </body>
 </html>
+
 
 
